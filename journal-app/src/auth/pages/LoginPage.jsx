@@ -4,7 +4,7 @@ import { Button, Grid, Link, TextField, Typography } from "@mui/material"
 import { AuthLayout } from "../layout/AuthLayout"
 import { useForm } from "../../hooks/useForm"
 import { checkingAuthentication, startGoogleAuth } from "../../store/auth/thunks"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 export const LoginPage = () => {
 
@@ -13,6 +13,8 @@ export const LoginPage = () => {
     password: 1234,
   })
   const dispatch = useDispatch()
+  const {status} = useSelector(state => state.auth)
+  console.log(status)
 
   const onSubmit =(event) =>{
       event.preventDefault()
@@ -53,14 +55,14 @@ export const LoginPage = () => {
         <Grid container spacing={2} sx={{mb: 2, mt: 1}}>
           <Grid item xs={12} sm={6}>
             <Button variant="contained" fullWidth
-            type="submit">
+            type="submit" disabled={(status === "checking")}>
               Login
             </Button>
           </Grid>
 
           <Grid item xs={12} sm={6}>
             <Button variant="contained" fullWidth
-            onClick={() => onGoogleLog()}>
+            onClick={() => onGoogleLog()} disabled={(status === "checking")}>
               <Google/>
                 <Typography sx={{ml: 1}}>
                   Google
