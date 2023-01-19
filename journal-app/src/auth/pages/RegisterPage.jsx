@@ -1,28 +1,38 @@
 import { Link as ReactLink } from "react-router-dom"
-import { Google } from "@mui/icons-material"
 import { Button, Grid, Link, TextField, Typography } from "@mui/material"
 import { AuthLayout } from "../layout/AuthLayout"
 import { useForm } from "../../hooks/useForm"
+import { useState } from "react"
 
 const formData = {
-  email: "leandro@gmail.com",
-  password: "1234",
-  displayName: "Leandro"
+  email: "",
+  password: "",
+  displayName: ""
 
+}
+
+const validator = {
+  email: [(value) => value.includes("@"), "el correo debe ser correcto e incluir @"],
+  password: [(value) => value.length >=6, "el password debe tener más de 6 letras"],
+  displayName: [(value) => value.length >=1, "el nombre es obligatorio"],
 }
 
 
 export const RegisterPage = () => {
 
-  const {email, password, onInputChange, displayName, formState} = useForm(formData)
-
+  const [inicial, setInicial] = useState(false);
+  const {email, password, onInputChange, displayName, formState,
+  isValid, emailValid, passwordValid, displayNameValid} = useForm(formData, validator)
+    console.log(isValid)
   const onSubmit =(event) =>{
     event.preventDefault()
-    console.log(formState)
+    setInicial(true)
+    //console.log(formState)
 }
 
   return (
     <AuthLayout title="Register!!">
+      <h2>ESTADO DE FORMULARIO: <input type="checkbox" checked={isValid} readOnly></input></h2>
 
       <form onSubmit={onSubmit}>
 
@@ -33,7 +43,9 @@ export const RegisterPage = () => {
           >
             <TextField label="Nombre completo" type="text" 
             placeholder="Leandro Martin" fullWidth
-            name="displayName" value={displayName} onChange={onInputChange}></TextField>
+            name="displayName" value={displayName} onChange={onInputChange}
+            error={!isValid && inicial}
+            helperText={displayNameValid}></TextField>
           </Grid>
         </Grid>
 
@@ -43,7 +55,11 @@ export const RegisterPage = () => {
           <Grid item >
             <TextField label="Email" type="email" 
             placeholder="correo@servidor.com" fullWidth
-            name="email" value={email} onChange={onInputChange}></TextField>
+            name="email" value={email} onChange={onInputChange}
+            error={!isValid && inicial}
+            helperText={emailValid}
+
+            ></TextField>
           </Grid>
         </Grid>
 
@@ -52,7 +68,11 @@ export const RegisterPage = () => {
           <Grid item >
             <TextField label="contraseña" type="password" 
             placeholder="********" fullWidth
-            name="password" value={password} onChange={onInputChange}></TextField>
+            name="password" value={password} onChange={onInputChange}
+            error={!isValid && inicial}
+            helperText={passwordValid}
+
+            ></TextField>
           </Grid>
         </Grid>
 
