@@ -42,7 +42,7 @@ export const useForm = ( initialForm = {}, validator = {} ) => {
         
         
         setformValid(formCheckValid)
-        console.log("form check:", formCheckValid)
+        //console.log("form check:", formCheckValid)
 
     }
 

@@ -1,8 +1,11 @@
 import { Link as ReactLink } from "react-router-dom"
-import { Button, Grid, Link, TextField, Typography } from "@mui/material"
+import { Alert, Button, Grid, Link, TextField, Typography } from "@mui/material"
 import { AuthLayout } from "../layout/AuthLayout"
 import { useForm } from "../../hooks/useForm"
-import { useState } from "react"
+import { useState, useMemo } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { startCreatingUserWithEmailPw } from "../../store/auth/thunks"
+
 
 const formData = {
   email: "",
@@ -20,14 +23,24 @@ const validator = {
 
 export const RegisterPage = () => {
 
+  const dispatch = useDispatch()
   const [inicial, setInicial] = useState(false);
   const {email, password, onInputChange, displayName, formState,
   isValid, emailValid, passwordValid, displayNameValid} = useForm(formData, validator)
-    console.log(isValid)
+  const {status, errorMessage} = useSelector(state => state.auth)
+  const statusValidator = useMemo(() => status == "checking", [status])
+  console.log(errorMessage)
+  console.log(statusValidator)
+  
+
   const onSubmit =(event) =>{
     event.preventDefault()
     setInicial(true)
-    //console.log(formState)
+    if (!isValid) {
+      return
+    }
+    dispatch(startCreatingUserWithEmailPw(formState))
+   
 }
 
   return (
@@ -77,8 +90,14 @@ export const RegisterPage = () => {
         </Grid>
 
         <Grid container spacing={2} sx={{mb: 2, mt: 1}}>
+        <Grid item xs={12} display={(!!errorMessage) ? "" : "none"}>
+            <Alert severity="error">
+              {errorMessage}
+            </Alert>
+          </Grid>
+
           <Grid item xs={12}>
-            <Button type="submit" variant="contained" fullWidth>
+            <Button type="submit" variant="contained" fullWidth disabled={statusValidator}>
               registrarse
             </Button>
           </Grid>
