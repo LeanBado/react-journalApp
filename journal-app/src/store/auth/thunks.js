@@ -1,4 +1,4 @@
-import { registroUsuarioConEmailPw, signInWithGoogle } from "../../firebase/providers"
+import { loginWIthEmailPassword, registroUsuarioConEmailPw, signInWithGoogle } from "../../firebase/providers"
 import { checkingCredentials, login, logOut } from "./authSlice"
 
 export const checkingAuthentication = () => {
@@ -28,6 +28,18 @@ export const startCreatingUserWithEmailPw = ({email, password, displayName}) => 
 
         if(!ok) return dispatch (logOut({errorMessage})) //el payload en el logOut es un objeto, asique hay que pasar el errorMessage como tal
     
+        dispatch(login({uid, displayName, email, photoURL}))
+    }
+}
+
+export const startLoginWIthEmailPassword = ({email, password, displayName}) => {
+    return async (dispatch) =>{
+
+        dispatch(checkingCredentials())
+        const {ok, photoURL, uid, errorMessage, displayName} = await loginWIthEmailPassword({email, password})
+
+        if(!ok) return dispatch (logOut({errorMessage}))
+
         dispatch(login({uid, displayName, email, photoURL}))
     }
 }

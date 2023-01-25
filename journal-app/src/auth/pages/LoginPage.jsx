@@ -1,25 +1,27 @@
 import { Link as ReactLink } from "react-router-dom"
 import { Google } from "@mui/icons-material"
-import { Button, Grid, Link, TextField, Typography } from "@mui/material"
+import { Alert, Button, Grid, Link, TextField, Typography } from "@mui/material"
 import { AuthLayout } from "../layout/AuthLayout"
 import { useForm } from "../../hooks/useForm"
-import { checkingAuthentication, startGoogleAuth } from "../../store/auth/thunks"
+import { checkingAuthentication, startGoogleAuth, startLoginWIthEmailPassword } from "../../store/auth/thunks"
 import { useDispatch, useSelector } from "react-redux"
+import { useMemo } from "react"
 
 export const LoginPage = () => {
 
-  const {email, password, onInputChange} = useForm({
+  const {email, password, onInputChange, formState} = useForm({
     email: "leandro@gmail.com",
     password: "1234",
   })
   const dispatch = useDispatch()
-  const {status} = useSelector(state => state.auth)
-  console.log(status)
-
+  const {status, errorMessage} = useSelector(state => state.auth)
+  const statusValidator = useMemo(() => status == "checking", [status])
+  
+ 
   const onSubmit =(event) =>{
       event.preventDefault()
-      dispatch(checkingAuthentication())
-      console.log(email, password)
+    
+      dispatch (startLoginWIthEmailPassword(formState))
   }
 
   const onGoogleLog= () => {
@@ -53,16 +55,22 @@ export const LoginPage = () => {
         </Grid>
 
         <Grid container spacing={2} sx={{mb: 2, mt: 1}}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6} display={(!!errorMessage) ? "" : "none"}>
+            <Alert severity="error">
+              {errorMessage}
+            </Alert>
+          </Grid>
+          
+          <Grid container item xs={12} sm={6} >  
             <Button variant="contained" fullWidth
-            type="submit" disabled={(status === "checking")}>
+            type="submit" disabled={statusValidator}>
               Login
             </Button>
           </Grid>
 
           <Grid item xs={12} sm={6}>
             <Button variant="contained" fullWidth
-            onClick={() => onGoogleLog()} disabled={(status === "checking")}>
+            onClick={() => onGoogleLog()} disabled={statusValidator}>
               <Google/>
                 <Typography sx={{ml: 1}}>
                   Google
