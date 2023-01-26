@@ -32,10 +32,11 @@ export const LoginPage = () => {
   return (
     <AuthLayout title="Login!">
 
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit}  className='animate__animated animate__fadeIn animate__faster'
+>
 
         <Grid container
-        display="block">
+          display="block">
           <Grid item
           sx={{mb: 2}}
           >
@@ -46,7 +47,7 @@ export const LoginPage = () => {
         </Grid>
 
         <Grid container 
-        display="block">
+          display="block">
           <Grid item >
             <TextField label="contraseña" type="password" 
             placeholder="********" fullWidth
@@ -54,36 +55,40 @@ export const LoginPage = () => {
           </Grid>
         </Grid>
 
-        <Grid container spacing={2} sx={{mb: 2, mt: 1}}>
-          <Grid item xs={12} sm={6} display={(!!errorMessage) ? "" : "none"}>
-            <Alert severity="error">
-              {errorMessage}
-            </Alert>
-          </Grid>
-          
-          <Grid container item xs={12} sm={6} >  
-            <Button variant="contained" fullWidth
-            type="submit" disabled={statusValidator}>
-              Login
-            </Button>
-          </Grid>
+            <Grid container display={!!errorMessage ? '': 'none'} sx={{ mt: 1 }}>
+              <Grid item xs={ 12 }>
+                <Alert severity='error'>{errorMessage}</Alert>
+              </Grid>
+            </Grid>
+            
+            <Grid container spacing={ 2 } sx={{ mb: 2, mt: 1 }}>
+              <Grid item xs={ 12 } sm={ 6 }>
+                <Button
+                  disabled={statusValidator}
+                  type="submit" 
+                  variant='contained' 
+                  fullWidth>
+                  Login
+                </Button>
+              </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <Button variant="contained" fullWidth
-            onClick={() => onGoogleLog()} disabled={statusValidator}>
-              <Google/>
-                <Typography sx={{ml: 1}}>
-                  Google
-                </Typography>
-            </Button>
-          </Grid>
+              <Grid item xs={ 12 } sm={ 6 }>
+                <Button
+                   disabled={statusValidator}
+                   variant='contained' 
+                   fullWidth
+                   onClick={() => onGoogleLog()}>
+                  <Google />
+                  <Typography sx={{ ml: 1 }}>Google</Typography>
+                </Button>
+              </Grid>
+            </Grid>
 
           <Grid container direction="row" justifyContent="end" >
             <Link component={ReactLink} color="inherit" to="/auth/register" >
               Crear una cuenta
             </Link>  
           </Grid>
-        </Grid>
 
       </form>
 

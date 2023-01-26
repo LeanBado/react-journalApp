@@ -46,7 +46,8 @@ export const RegisterPage = () => {
     <AuthLayout title="Register!!">
       <h2>ESTADO DE FORMULARIO: <input type="checkbox" checked={isValid} readOnly></input></h2>
 
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit}     className='animate__animated animate__fadeIn animate__faster'
+>
 
         <Grid container
         display="block">
