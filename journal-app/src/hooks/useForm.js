@@ -10,6 +10,11 @@ export const useForm = ( initialForm = {}, validator = {} ) => {
         createValidators()
     }, [formState]);
 
+    useEffect(() => {
+        setFormState(initialForm)
+        
+    }, [initialForm]);
+
     const isValid = useMemo(() => {
         for (const i of Object.keys(formValid)) {
             if (formValid[i] !== null) return false //con que haya 1 solo elemento del formulario invalido, devuelve false y no continua

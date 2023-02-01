@@ -1,3 +1,4 @@
+import { async } from "@firebase/util"
 import { collection, doc, setDoc } from "firebase/firestore/lite"
 import { FirebaseDB } from "../../firebase/config"
 import { loadNotes } from "../../helpers/loadNotes"
@@ -36,4 +37,17 @@ export const startLoadingNotes = ()=>{
   
     dispatch(setNotes(notes))
     }
+}
+
+export const activeNote = ({title = "", body = "", date, id, imageURL = []}) => {
+  return async(dispatch) =>{
+    
+    const newNote = {
+      id, title, body, date, imageURL,
+
+  }
+
+    dispatch(setActiveNote(newNote))
+    
+  }
 }

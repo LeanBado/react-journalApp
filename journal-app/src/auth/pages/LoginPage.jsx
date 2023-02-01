@@ -7,12 +7,14 @@ import { checkingAuthentication, startGoogleAuth, startLoginWIthEmailPassword } 
 import { useDispatch, useSelector } from "react-redux"
 import { useMemo } from "react"
 
+const formData = {
+  email: "",
+  password: "",
+}
+
 export const LoginPage = () => {
 
-  const {email, password, onInputChange, formState} = useForm({
-    email: "leandro@gmail.com",
-    password: "1234",
-  })
+  const {email, password, onInputChange, formState} = useForm(formData)
   const dispatch = useDispatch()
   const {status, errorMessage} = useSelector(state => state.auth)
   const statusValidator = useMemo(() => status == "checking", [status])
