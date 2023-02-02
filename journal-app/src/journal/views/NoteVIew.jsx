@@ -2,14 +2,26 @@ import { SaveOutlined } from '@mui/icons-material'
 import { Button, Grid, TextField, Typography } from '@mui/material'
 import React from 'react'
 import { ImageGallerys } from '../components/ImageGallerys'
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useForm } from '../../hooks/useForm'
+import { useEffect } from 'react'
+import { setActiveNote } from '../../store/journal/journalSlice'
+import { SavingNote } from '../../store/journal/thunks'
 
 export const NoteVIew = () => {
+    const dispatch = useDispatch()
     const {active: noteActive} = useSelector(state => state.journal)
-    const { title, body, onInputChange, date } = useForm(noteActive)
+    const { title, body, onInputChange, date, formState } = useForm(noteActive)
 
     const dateString = new Date(date).toUTCString()
+
+    useEffect(() => {
+        dispatch(setActiveNote(formState))
+    }, [formState]);
+
+    const onSaveNote = ()=>{
+        dispatch(SavingNote())
+    }
 
   return (
     <Grid container direction="row" justifyContent="space-between" sx={{mb: 1 }}>
@@ -18,7 +30,7 @@ export const NoteVIew = () => {
         </Grid>
 
         <Grid item>
-            <Button color='primary' sx={{padding: 2 }}>
+            <Button color='primary' sx={{padding: 2 }} onClick={onSaveNote}>
                 <SaveOutlined sx={{fontSize: 30, mr: 1 }}></SaveOutlined>Guardar
             </Button>
         </Grid>
@@ -33,7 +45,7 @@ export const NoteVIew = () => {
             ></TextField>
             <TextField type="text" variant="filled" 
             fullWidth multiline placeholder="que sucedió hoy?" 
-            label="Titulo" minRows="5"
+            label="Body" minRows="5"
             name="body"
             value={body}
             onChange={onInputChange}
