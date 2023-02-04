@@ -81,7 +81,7 @@ export const NoteVIew = () => {
 
         </Grid>
 
-        <ImageGallerys></ImageGallerys>
+        <ImageGallerys images={noteActive.imageURL}></ImageGallerys>
 
     </Grid>
 )}
