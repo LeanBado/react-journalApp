@@ -2,6 +2,9 @@ import { ImageList, ImageListItem } from '@mui/material';
 import * as React from 'react';
 
 export const ImageGallerys = ({images})=> {
+  if(!images){
+    return
+  }
   return (
     <ImageList sx={{ width: "100%", height: 500 }} cols={3} rowHeight={164}>
       {images.map((image) => (
