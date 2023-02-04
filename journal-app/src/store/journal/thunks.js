@@ -1,8 +1,9 @@
 import { async } from "@firebase/util"
 import { collection, doc, setDoc } from "firebase/firestore/lite"
 import { FirebaseDB } from "../../firebase/config"
+import { fileUpload } from "../../helpers/fileUpload"
 import { loadNotes } from "../../helpers/loadNotes"
-import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setSavingNotes, updateNote } from "./journalSlice"
+import { addNewEmptyNote, savingNewNote, setActiveNote, setFotosActiveNote, setNotes, setSavingNotes, updateNote } from "./journalSlice"
 
 export const startNewNote = () => {
   return async( dispatch, getState ) =>{
@@ -73,8 +74,14 @@ export const startUploadingFiles = (files = []) =>{
     return async(dispatch)=>{
 
       dispatch(setSavingNotes())
-      console.log(files)
-
+     
+      const fileUploadPromises = [] //arreglo de promesas (fotos) que se dispararan al mismo tiempo 
+      for (const file of files) {
+        fileUploadPromises.push(fileUpload(file)) // se va a almacenar en fileUploadPromises el url de cada foto
+      }
+      console.log(fileUploadPromises)
+      const fotosURL = await Promise.all(fileUploadPromises) // cuando se resuelve el await devuelve un arreglo con la resolucion de las promesas en el mismo orden que se envian
+      dispatch(setFotosActiveNote(fotosURL))
 
     }
 }
