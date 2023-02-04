@@ -1,26 +1,43 @@
-import { SaveOutlined } from '@mui/icons-material'
-import { Button, Grid, TextField, Typography } from '@mui/material'
+import { SaveOutlined, UploadFileOutlined } from '@mui/icons-material'
+import { Button, Grid, IconButton, TextField, Typography } from '@mui/material'
 import React from 'react'
 import { ImageGallerys } from '../components/ImageGallerys'
 import { useDispatch, useSelector } from "react-redux"
 import { useForm } from '../../hooks/useForm'
 import { useEffect } from 'react'
 import { setActiveNote } from '../../store/journal/journalSlice'
-import { SavingNote } from '../../store/journal/thunks'
+import { SavingNote, startUploadingFiles } from '../../store/journal/thunks'
+import Swal from "sweetalert2"
+import "sweetalert2/dist/sweetalert2.css"
+import { useRef } from 'react'
 
 export const NoteVIew = () => {
     const dispatch = useDispatch()
-    const {active: noteActive} = useSelector(state => state.journal)
+    const {active: noteActive, savedMessage, isSaving} = useSelector(state => state.journal)
     const { title, body, onInputChange, date, formState } = useForm(noteActive)
 
-    const dateString = new Date(date).toUTCString()
+    const dateString = new Date(date).toUTCString() // configura la fecha
 
     useEffect(() => {
         dispatch(setActiveNote(formState))
     }, [formState]);
 
+    useEffect(() => {
+       if(savedMessage.length >0){//el savedMessage va a variar entre texto vacio y con caracteres, solo se dispara cuando tiene caracteres
+        Swal.fire("Nota actualizada", savedMessage, "success")
+       }
+    }, [savedMessage]);
+
+    const fileRef = useRef()
+
     const onSaveNote = ()=>{
         dispatch(SavingNote())
+    }
+
+    const onInputFile = ({target}) =>{
+       if(target.files === 0) return
+       console.log("subiendo archivos")
+        dispatch(startUploadingFiles(target.files))
     }
 
   return (
@@ -30,7 +47,18 @@ export const NoteVIew = () => {
         </Grid>
 
         <Grid item>
-            <Button color='primary' sx={{padding: 2 }} onClick={onSaveNote}>
+
+            <input type="file" multiple onChange={onInputFile} ref={fileRef}
+            style={{display: "none"}}></input>
+            <IconButton color="primary"
+            disabled={isSaving}
+            onClick={() => fileRef.current.click()} //esto simula el click en el input type file mediante el uso de ref={fileRef}
+            > 
+                <UploadFileOutlined></UploadFileOutlined>
+            </IconButton>
+
+            <Button color='primary' sx={{padding: 2 }} onClick={onSaveNote}
+            disabled={isSaving}>
                 <SaveOutlined sx={{fontSize: 30, mr: 1 }}></SaveOutlined>Guardar
             </Button>
         </Grid>
